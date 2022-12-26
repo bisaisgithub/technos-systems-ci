@@ -27,31 +27,30 @@ class Register extends CI_Controller
       $email = $this->input->post('email');
       $emailExist = $this->register_model->checkEmail($email);
       if ($emailExist > 0) {
-        $data['err'] = 'Email Exist';
-        print_r($emailExist);
-        $this->load->view('register', $data);
+        $this->session->set_userdata('err', 'Email Exist');
+        $this->load->view('register');
       } else {
-        $data['err'] = 'Not Email Exist';
-        print_r($emailExist);
-        $this->load->view('register', $data);
-        // $encrypted_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
-        // $data = array(
-        //   'name'  => $this->input->post('full_name'),
-        //   'email'  => $this->input->post('email'),
-        //   'password' => $encrypted_password
-        // );
 
-        // $id = $this->register_model->insert($data);
+        $encrypted_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
+        $data = array(
+          'full_name'  => $this->input->post('full_name'),
+          'email'  => $this->input->post('email'),
+          'password' => $encrypted_password
+        );
 
-        // if ($id > 0) {
-        // } else {
-        //   echo 'insert failed';
-        // }
+        $id = $this->register_model->insert($data);
+
+        if ($id > 0) {
+          $this->session->set_userdata('msg', "Account has been created succesfully. <a href='login.php'>Login Now!</a>");
+          $this->load->view('register');
+        } else {
+          $this->session->set_userdata('err', "Creating account failed, please try again later");
+          $this->load->view('register');
+        }
       }
     } else {
-      //  $data['err'] = 'Validation Failed';
-        // echo $data['err'];
-        $this->load->view('register');
+      $this->session->set_userdata('err', "User input/s validation failed, please try again");
+      $this->load->view('register');
     }
   }
 }

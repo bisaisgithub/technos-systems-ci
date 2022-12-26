@@ -66,17 +66,17 @@
         <a href="login.php" id="alreadyhave">
           <p class="p">I already have a membership</p>
         </a>
-        <?php if (isset($_SESSION['success_msg']) && !empty($_SESSION['success_msg'])) : ?>
+        <?php if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) : ?>
           <div class="alert alert-success">
-            <?= $_SESSION['success_msg'] ?>
+            <?= $_SESSION['msg'] ?>
           </div>
-          <?php unset($_SESSION['success_msg']); ?>
-        <?php else : ?>
-        <?php endif; ?>
-        <?php if (isset($err) && !empty($err)) : ?>
+          <?php unset($_SESSION['msg']); ?>
+        <?php elseif (isset($_SESSION['err']) && !empty($_SESSION['err'])) : ?>
           <div class="alert alert-danger" id="alertmessage">
-            <?= $err ?>
+            <?= $_SESSION['err'] ?>
           </div>
+          <?php unset($_SESSION['err']); ?>
+          <?php else : ?>
         <?php endif; ?>
       </form>
     </div>
