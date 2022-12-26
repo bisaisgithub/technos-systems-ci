@@ -1,5 +1,5 @@
 <?php
-class Register_model extends CI_Model
+class Login_model extends CI_Model
 {
 
  function checkEmail($email)

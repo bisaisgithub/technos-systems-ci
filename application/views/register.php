@@ -63,7 +63,7 @@
           </div>
           <button class="btn btn-primary" name="submit" type="submit">Register</button>
         </div>
-        <a href="login.php" id="alreadyhave">
+        <a href="login" id="alreadyhave">
           <p class="p">I already have a membership</p>
         </a>
         <?php if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) : ?>

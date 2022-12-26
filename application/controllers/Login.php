@@ -8,43 +8,52 @@ class Login extends CI_Controller
   public function __construct()
   {
     parent::__construct();
-    // if ($this->session->userdata('id')) {
-    //   redirect('private_area');
-    // }
+    if ($this->session->userdata('id') || $this->session->userdata('id') != '') {
+      redirect('dashboard');
+    }
     $this->load->model('login_model');
   }
 
   function index()
   {
-      $this->load->view('login');
-  }
-  function login(){
-    $email = $this->input->post('email');
-    $emailExist = $this->register_model->checkEmail($email);
-
-    if ($emailExist > 0) {
-
-      $encrypted_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
-      $data = array(
-        'full_name'  => $this->input->post('full_name'),
-        'email'  => $this->input->post('email'),
-        'password' => $encrypted_password
-      );
-
-      $id = $this->register_model->insert($data);
-
-      if ($id > 0) {
-        $this->session->set_userdata('msg', "Account has been created succesfully. <a href='login.php'>Login Now!</a>");
-        $this->load->view('register');
+    if ($this->input->method(true) === 'POST') {
+      $email = $this->input->post('email');
+      $emailExist = $this->db
+        ->select("*")
+        ->from("user")
+        ->where("email", $email)
+        ->get();
+      if ($emailExist->num_rows() ===  1) {
+        $inputpassword = $this->input->post('password');
+        $row = $emailExist->row();
+        // print_r('$row : '. $row->password);
+        $password_verify = password_verify($inputpassword, $row->password);
+        // print('verify :'. $password_verify);
+        if ($password_verify == 1) {
+          $this->session->set_userdata('id', $row->id);
+          if (isset($_POST['rememberMe'])) {
+            /**
+             * Store Login Credential
+             */
+            setcookie('email', $_POST['email'], (time() + ((365 * 24 * 60 * 60) * 3)));
+            setcookie('password', $_POST['password'], (time() + ((365 * 24 * 60 * 60) * 3)));
+          } else {
+            /**
+             * Delete Login Credential
+             */
+            setcookie('email', $_POST['email'], (time() - (24 * 60 * 60)));
+            setcookie('password', $_POST['password'], (time() - (24 * 60 * 60)));
+          }
+          redirect('dashboard');
+        } else {
+          $this->session->set_userdata('err', "Invalid email and or password");
+          $this->load->view('login');
+        }
       } else {
-        $this->session->set_userdata('err', "Creating account failed, please try again later");
-        $this->load->view('register');
+        $this->session->set_userdata('err', "Invalid email and or password");
+        $this->load->view('login');
       }
-
-      
-
     } else {
-      $this->session->set_userdata('err', 'Invalid email and or password');
       $this->load->view('login');
     }
   }
