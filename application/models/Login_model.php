@@ -2,7 +2,7 @@
 class Login_model extends CI_Model
 {
 
- function checkEmail($email)
+ function getUserByEmail($email)
  {
   $this->db->where('email', $email);
   $query = $this->db->get('user');

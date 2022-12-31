@@ -16,41 +16,32 @@ class Login extends CI_Controller
 
   function index()
   {
-    if ($this->input->method(true) === 'POST') {
+    if ($this->input->post('SignIn')) {
       $email = $this->input->post('email');
-      $emailExist = $this->db
-        ->select("*")
-        ->from("user")
-        ->where("email", $email)
-        ->get();
-      if ($emailExist->num_rows() ===  1) {
+      $User = $this->login_model->getUserByEmail($email);
+      if ($User->num_rows() ===  1) {
         $inputpassword = $this->input->post('password');
-        $row = $emailExist->row();
+        $row = $User->row();
         // print_r('$row : '. $row->password);
         $password_verify = password_verify($inputpassword, $row->password);
         // print('verify :'. $password_verify);
         if ($password_verify == 1) {
           $this->session->set_userdata('id', $row->id);
-          if (isset($_POST['rememberMe'])) {
-            /**
-             * Store Login Credential
-             */
+          print_r($_POST);
+          if ($this->input->post('rememberMe')) {
             setcookie('email', $_POST['email'], (time() + ((365 * 24 * 60 * 60) * 3)));
             setcookie('password', $_POST['password'], (time() + ((365 * 24 * 60 * 60) * 3)));
           } else {
-            /**
-             * Delete Login Credential
-             */
             setcookie('email', $_POST['email'], (time() - (24 * 60 * 60)));
             setcookie('password', $_POST['password'], (time() - (24 * 60 * 60)));
           }
-          redirect('dashboard');
+          // redirect('dashboard');
         } else {
-          $this->session->set_userdata('err', "Invalid email and or password");
+          $this->session->set_flashdata('login_err', "Invalid email and or password");
           $this->load->view('login');
         }
       } else {
-        $this->session->set_userdata('err', "Invalid email and or password");
+        $this->session->set_flashdata('login_err', "Invalid email and or password");
         $this->load->view('login');
       }
     } else {

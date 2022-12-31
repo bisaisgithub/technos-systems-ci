@@ -35,7 +35,7 @@ class Dashboard extends CI_Controller
         redirect('login');
       }
     } else {
-      $this->load->view('login');
+      redirect('login');
     }
 
   }

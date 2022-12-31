@@ -17,18 +17,17 @@ class Register extends CI_Controller
 
   function index()
   {
-    $this->load->view('register');
-    if ($this->input->method(true) === 'POST') {
+    // $this->load->view('register');
+    if ($this->input->post('register')) {
       $this->form_validation->set_rules('full_name', 'full_name', 'required');
       $this->form_validation->set_rules('email', 'email', 'required|trim|valid_email');
-      $this->form_validation->set_rules('password', 'password', 'required');
-      $this->form_validation->set_rules('confirmpassword', 'confirmpassword', 'required|min_length[8]');
+      $this->form_validation->set_rules('password', 'password', 'required|min_length[8]');
 
       if ($this->form_validation->run() == true) {
         $email = $this->input->post('email');
         $emailExist = $this->register_model->checkEmail($email);
         if ($emailExist > 0) {
-          $this->session->set_userdata('err', 'Email Exist');
+          $this->session->set_flashdata('register_error', 'Email Exist');
           $this->load->view('register');
         } else {
 
@@ -42,17 +41,19 @@ class Register extends CI_Controller
           $id = $this->register_model->insert($data);
 
           if ($id > 0) {
-            $this->session->set_userdata('msg', "Account has been created succesfully. <a href='login.php'>Login Now!</a>");
+            $this->session->set_flashdata('register_success', "Account has been created succesfully. <a href='login.php'>Login Now!</a>");
             $this->load->view('register');
           } else {
-            $this->session->set_userdata('err', "Creating account failed, please try again later");
+            $this->session->set_flashdata('register_error', "Creating account failed, please try again later");
             $this->load->view('register');
           }
         }
       } else {
-        $this->session->set_userdata('err', "User input/s validation failed, please try again");
+        $this->session->set_flashdata('register_error', "User input/s validation failed, please try again");
         $this->load->view('register');
       }
+    }else{
+      $this->load->view('register');
     }
   }
 }

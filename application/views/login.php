@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <?php include('components/css-libraries.php'); ?>
+  <?php include_once('components/css-libraries.php'); ?>
   <link rel="stylesheet" href="<?= base_url('assets/css/login.css'); ?>">
 </head>
 
@@ -35,32 +35,25 @@
         </div>
         <div class="remember">
           <div>
-            <input class="form-check-input-no" type="checkbox" name="rememberMe" value="" id="rememberMe" <?= (isset($_COOKIE['email']) && isset($_COOKIE['password'])) ? "checked" : '' ?>>
+            <input class="form-check-input-no" type="checkbox" name="rememberMe" value="true" id="rememberMe" <?= (isset($_COOKIE['email']) && isset($_COOKIE['password'])) ? "checked" : '' ?>>
             <label class="form-check-label" for="rememberMe">
               Remember Me
             </label>
           </div>
-          <button class="btn btn-primary" name="submit" type="submit">Sign In</button>
+          <button class="btn btn-primary" name="SignIn" value="true" type="submit">Sign In</button>
         </div>
         <a href="register">
           <p>Register a new membership</p>
         </a>
-        <?php if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) : ?>
-          <div class="alert alert-success">
-            <?= $_SESSION['msg'] ?>
+        <?php if ($this->session->flashdata('login_err')) : ?>
+          <div class="alert alert-danger">
+            <?= $this->session->flashdata('login_err') ?>
           </div>
-          <?php unset($_SESSION['msg']); ?>
-        <?php elseif (isset($_SESSION['err']) && !empty($_SESSION['err'])) : ?>
-          <div class="alert alert-danger" id="alertmessage">
-            <?= $_SESSION['err'] ?>
-          </div>
-          <?php unset($_SESSION['err']); ?>
-          <?php else : ?>
         <?php endif; ?>
       </form>
     </div>
   </div>
-  <?php include('components/js-libraries.php'); ?>
+  <?php include_once('components/js-libraries.php'); ?>
 </body>
 
 </html>

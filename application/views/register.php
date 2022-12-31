@@ -6,8 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <?php include('components/css-libraries.php'); ?>
+  <?php include_once('components/css-libraries.php'); ?>
   <link rel="stylesheet" href="<?= base_url('assets/css/register.css'); ?>">
+  <script>
+    function onFocus(){
+      var element = document.getElementById('register_notif');
+      element.parentNode.removeChild(element);
+    }
+  </script>
 </head>
 
 <body>
@@ -18,7 +24,7 @@
       <p>Register a new membership</p>
       <form class="row g-3 needs-validation" novalidate method="post" action="">
         <div class="input-group has-validation">
-          <input type="text" placeholder="Full name" name="full_name" class="form-control" id="full_name" aria-describedby="inputGroupPrepend" required>
+          <input onfocus="onFocus()" type="text" placeholder="Full name" name="full_name" class="form-control" id="full_name" aria-describedby="inputGroupPrepend" required>
           <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-user" aria-hidden="true"></i>
           </span>
           <div class="invalid-feedback">
@@ -61,27 +67,24 @@
               You must agree before submitting.
             </div>
           </div>
-          <button class="btn btn-primary" name="submit" type="submit">Register</button>
+          <button class="btn btn-primary" name="register" value="true" type="submit">Register</button>
         </div>
         <a href="login" id="alreadyhave">
           <p class="p">I already have a membership</p>
         </a>
-        <?php if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) : ?>
-          <div class="alert alert-success">
-            <?= $_SESSION['msg'] ?>
+        <?php if ($this->session->flashdata('register_success')) : ?>
+          <div id="register_notif" class="alert alert-success">
+            <?= $this->session->flashdata('register_success') ?>
           </div>
-          <?php unset($_SESSION['msg']); ?>
-        <?php elseif (isset($_SESSION['err']) && !empty($_SESSION['err'])) : ?>
-          <div class="alert alert-danger" id="alertmessage">
-            <?= $_SESSION['err'] ?>
+        <?php elseif ($this->session->flashdata('register_error')) : ?>
+          <div id="register_notif" class="alert alert-danger" id="alertmessage">
+            <?= $this->session->flashdata('register_error') ?>
           </div>
-          <?php unset($_SESSION['err']); ?>
-          <?php else : ?>
         <?php endif; ?>
       </form>
     </div>
   </div>
-  <?php include('components/css-libraries.php'); ?>
+  <?php include_once('components/css-libraries.php'); ?>
   <script src="<?= base_url('assets/js/script.js'); ?>"></script>
 </body>
 
