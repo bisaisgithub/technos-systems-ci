@@ -19,29 +19,21 @@ class Register extends CI_Controller
   {
     // $this->load->view('register');
     if ($this->input->post('register')) {
-      $this->form_validation->set_rules('full_name', 'full_name', 'required');
-      $this->form_validation->set_rules('email', 'email', 'required|trim|valid_email');
-      $this->form_validation->set_rules('password', 'password', 'required|min_length[8]');
+      $this->form_validation->set_rules('full_name','Full Name','required');
+      $this->form_validation->set_rules('email','Email','required|trim|valid_email');
+      $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+      $this->form_validation->set_rules('confirmpassword', 'Confirm Password', 'matches[password]');
+      $this->form_validation->set_rules('terms','Terms','required',array('required' => 'You must agree to the %s'));
 
       if ($this->form_validation->run() == true) {
-        $email = $this->input->post('email');
-        $emailExist = $this->register_model->checkEmail($email);
+        $emailExist = $this->register_model->checkEmail();
         if ($emailExist > 0) {
           $this->session->set_flashdata('register_error', 'Email Exist');
           $this->load->view('register');
         } else {
-
-          $encrypted_password = password_hash($this->input->post('password'), PASSWORD_DEFAULT);
-          $data = array(
-            'full_name'  => $this->input->post('full_name'),
-            'email'  => $this->input->post('email'),
-            'password' => $encrypted_password
-          );
-
-          $id = $this->register_model->insert($data);
-
+          $id = $this->register_model->insert();
           if ($id > 0) {
-            $this->session->set_flashdata('register_success', "Account has been created succesfully. <a href='login.php'>Login Now!</a>");
+            $this->session->set_flashdata('register_success', "Account has been created succesfully. <a href='login'>Login Now!</a>");
             $this->load->view('register');
           } else {
             $this->session->set_flashdata('register_error', "Creating account failed, please try again later");

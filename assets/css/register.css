@@ -68,3 +68,6 @@ i{
 button{
   height: 40px;
 }
+.cursor{
+  cursor: pointer;
+}

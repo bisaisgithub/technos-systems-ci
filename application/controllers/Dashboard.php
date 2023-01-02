@@ -18,23 +18,16 @@ class Dashboard extends CI_Controller
   function index(){
 
     if ($this->input->method(true) === 'GET') {
-      $id = $this->session->userdata('id');
-      $idExist = $this->db
-        ->select("*")
-        ->from("user")
-        ->where("id", $id)
-        ->get();
-      if ($idExist->num_rows() ===  1) {
-
-        $row = $idExist->row();
-        $data['full_name'] = $row->full_name;
+      $user = $this->dashboard_model->checkId();
+      if ($user) {
+        $data['full_name'] = $user->full_name;
         $this->load->view('dashboard', $data);
-
       } else {
-
+        $this->session->sess_destroy();
         redirect('login');
       }
     } else {
+      $this->session->sess_destroy();
       redirect('login');
     }
 
